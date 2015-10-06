@@ -1,1 +1,91 @@
-lesshomeless
+<!DOCTYPE html>
+<html>
+<head>
+<script
+src="http://maps.googleapis.com/maps/api/js">
+</script>
+        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="js/blur.min.js"></script>
+<script
+src="js/map_styles.js">
+</script>
+
+<script>
+    var long = 0;
+    var lat = 0;
+     if (navigator.geolocation) 
+        navigator.geolocation.getCurrentPosition(showPosition); 
+    
+function showPosition(position) {
+   lat = position.coords.latitude;
+   long = position.coords.longitude; 
+}  
+function initialize() {
+
+   
+    
+  var mapProp = {
+    center:new google.maps.LatLng(lat,long),
+    zoom:18,
+    mapTypeId:google.maps.MapTypeId.ROADMAP
+  };
+    
+  var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
+ 
+var styledMap = new google.maps.StyledMapType(map_style5,
+    {name: "Dark map"});
+  //Associate the styled map with the MapTypeId and set it to display.
+  map.mapTypes.set('map_style', styledMap);
+  map.setMapTypeId('map_style');
+}
+  
+    
+google.maps.event.addDomListener(window, 'load', initialize);
+    
+    
+</script>
+    <script>
+        $('centeredDiv').blurjs({
+        source: 'body',
+        radius: 7,
+        overlay: 'rgba(255,0,255,0.4)'
+    });
+    </script>
+<style>
+    .body{
+    vertical-align: middle}
+    #googleMap{
+        position: absolute;
+  top: 0; bottom: 0; right: 0; left: 0;
+        z-index: 0;
+    }
+    #centeredDiv{
+        position: relative;
+        align-content: center;
+        text-align: center;
+        width: 300px;
+        height: 200px;
+        margin: auto;
+        top: 0 auto;
+        vertical-align: middle;
+        z-index: 2;
+        color: #FFF;
+    }
+</style>
+    
+</head>
+
+<body>
+    
+<div id="googleMap"></div>
+    
+    <div id= "centeredDiv" >
+        This is some text!
+    </div>
+    
+
+</body>
+
+
+</html>
