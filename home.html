@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!--AIzaSyA_BB6lZDuQmJ7Wl2rW6RpNCLepVWPetwA    API maps-->
+<html>
+<head>
+    <title>lessHomeless</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+    <!-- Custom Bootstrap -->
+    <link href="css/lesshomeless.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <!-- Map Custom Style -->
+    <script src="js/map_styles.js"></script>
+    <!-- Google Maps API -->
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script src="js/bootstrap.js"></script>
+    <!-- Connection Script for PHP layer -->
+    <script src="js/lesshomeless.js"></script>
+
+<script>
+    var long = 0;
+    var lat = 0;
+     if (navigator.geolocation)
+        navigator.geolocation.getCurrentPosition(showPosition);
+
+    function showPosition(position) {
+       lat = position.coords.latitude;
+       long = position.coords.longitude;
+    }
+
+    function initialize() {
+      var mapProp = {
+        center:new google.maps.LatLng(lat,long),
+        zoom:18,
+        mapTypeId:google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true
+      };
+
+    var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        //Definindo o estilo do mapa
+    var styledMap = new google.maps.StyledMapType(map_style6,
+        {name: "Dark map"});
+      //Associate the styled map with the MapTypeId and set it to display.
+      map.mapTypes.set('map_style', styledMap);
+      map.setMapTypeId('map_style');
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
+
+<style>
+    .body{
+    vertical-align: middle}
+    #googleMap{
+        position: absolute;
+  top: 0; bottom: 0; right: 0; left: 0;
+        z-index: 0;
+    }
+    #centeredDiv{
+        position: relative;
+        align-content: center;
+        text-align: center;
+        width: 300px;
+        height: 200px;
+        margin: auto;
+        bottom: 0 auto;
+        color: #FFF;
+    }
+    .bottomDiv{
+        position: absolute;
+        margin: auto;
+        align-content: center;
+        text-align: center;
+        align-items: center;
+        align-self: center;
+        bottom: 10px;
+        width: 100%;
+        opacity: 0.8;
+    }
+
+    #menu-bottom, #menu-bottom:hover, #menu-bottom:focus,#menu-bottom:active{
+
+        border: none;
+    }
+
+</style>
+
+</head>
+
+<body>
+    <div class="supreme-container">
+        <div id="googleMap"></div>
+            <div id= "centeredDiv" >
+                LessHomeless
+            </div>
+
+        <div class="bottomDiv">
+            <input data-toggle="modal" data-target="#myModal" type="image" src="img/icon_lesshomeless_medium.png" style="width: 20%;
+        max-width: 200px;
+        min-width: 100px;"></input>
+            <br><a href="http://lucascassiano.github.io">&copy; Lucas Cassiano - 2015</a>
+        </div>
+
+    </div>
+
+
+    <!------------Modals------------>
+    <script>
+        /**
+         * Vertically center Bootstrap 3 modals so they aren't always stuck at the top
+         */
+        $(function() {
+            function reposition() {
+                var modal = $(this),
+                    dialog = modal.find('.modal-dialog');
+                modal.css('display', 'block');
+
+                // Dividing by two centers the modal exactly, but dividing by three
+                // or four works better for larger screens.
+                dialog.css("margin-top", Math.max(0, ($(window).height() - dialog.height()) / 2));
+            }
+            // Reposition when a modal is shown
+            $('.modal').on('show.bs.modal', reposition);
+            // Reposition when the window is resized
+            $(window).on('resize', function() {
+                $('.modal:visible').each(reposition);
+            });
+        });
+    </script>
+
+
+<!--------------- Login -------------->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <h4 class="modal-title" id="myModalLabel">Login</h4>
+      </div>
+      <div class="modal-body">
+          <center>
+            <div id="user_data">
+                <div id="user_photo"></div>
+
+            </div>
+            <fb:login-button scope="public_profile,email" data-size="xlarge" onlogin="checkLoginState();" auto_logout_link="true">
+        Entrar</fb:login-button>
+
+<p><div id="status" margin-top="0px">
+</div>
+          </center>
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+
+
+</html>

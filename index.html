@@ -1,91 +1,168 @@
 <!DOCTYPE html>
-<html>
-<head>
-<script
-src="http://maps.googleapis.com/maps/api/js">
-</script>
-        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    <script src="js/blur.min.js"></script>
-<script
-src="js/map_styles.js">
-</script>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>LessHomeless</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- Font Awesome -->
+		<link href="css/font-awesome.min.css" rel="stylesheet">
+		<!-- Custom Bootstrap -->
+		<link href="css/lesshomeless.css" rel="stylesheet">
+		<!-- Connection Script for PHP layer -->
+		<script src="js/lesshomeless.js"></script>
+	</head>
 
-<script>
-    var long = 0;
-    var lat = 0;
-     if (navigator.geolocation) 
-        navigator.geolocation.getCurrentPosition(showPosition); 
-    
-function showPosition(position) {
-   lat = position.coords.latitude;
-   long = position.coords.longitude; 
-}  
-function initialize() {
 
-   
-    
-  var mapProp = {
-    center:new google.maps.LatLng(lat,long),
-    zoom:18,
-    mapTypeId:google.maps.MapTypeId.ROADMAP
-  };
-    
-  var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
- 
-var styledMap = new google.maps.StyledMapType(map_style5,
-    {name: "Dark map"});
-  //Associate the styled map with the MapTypeId and set it to display.
-  map.mapTypes.set('map_style', styledMap);
-  map.setMapTypeId('map_style');
-}
-  
-    
-google.maps.event.addDomListener(window, 'load', initialize);
-    
-    
-</script>
-    <script>
-        $('centeredDiv').blurjs({
-        source: 'body',
-        radius: 7,
-        overlay: 'rgba(255,0,255,0.4)'
-    });
-    </script>
-<style>
-    .body{
-    vertical-align: middle}
-    #googleMap{
-        position: absolute;
-  top: 0; bottom: 0; right: 0; left: 0;
-        z-index: 0;
-    }
-    #centeredDiv{
-        position: relative;
-        align-content: center;
-        text-align: center;
-        width: 300px;
-        height: 200px;
-        margin: auto;
-        top: 0 auto;
-        vertical-align: middle;
-        z-index: 2;
-        color: #FFF;
-    }
-</style>
-    
-</head>
+	<body style="background-image: url('img/background_login.png');">
+		<script>
+		  // This is called with the results from from FB.getLoginStatus().
+		  function statusChangeCallback(response) {
+		    console.log('statusChangeCallback');
+		    console.log(response);
+		    // The response object is returned with a status field that lets the
+		    // app know the current login status of the person.
+		    // Full docs on the response object can be found in the documentation
+		    // for FB.getLoginStatus().
+		    if (response.status === 'connected') {
+		      // Logged into your app and Facebook.
+		      Login();
+		    } else if (response.status === 'not_authorized') {
+		      // The person is logged into Facebook, but not your app.
+		      //document.getElementById('status').innerHTML = 'Please log ' +
+		        //'into this app.';
+		    } else {
+		      // The person is not logged into Facebook, so we're not sure if
+		      // they are logged into this app or not.
+		      //document.getElementById('status').innerHTML = 'Please log ' +
+		      //  'into Facebook.';
+		    }
+		  }
 
-<body>
-    
-<div id="googleMap"></div>
-    
-    <div id= "centeredDiv" >
-        This is some text!
+		  // This function is called when someone finishes with the Login
+		  // Button.  See the onlogin handler attached to it in the sample
+		  // code below.
+		  function checkLoginState() {
+		    FB.getLoginStatus(function(response) {
+		      statusChangeCallback(response);
+		    });
+		  }
+
+		  window.fbAsyncInit = function() {
+		  FB.init({
+		    appId      : '522430154523440',
+		    cookie     : true,  // enable cookies to allow the server to access
+		                        // the session
+		    xfbml      : true,  // parse social plugins on this page
+		    version    : 'v2.0' // use version 2.0
+		  });
+
+		  FB.getLoginStatus(function(response) {
+		    statusChangeCallback(response);
+		  });
+
+		  };
+
+		  // Load the SDK asynchronously
+		  (function(d, s, id) {
+		    var js, fjs = d.getElementsByTagName(s)[0];
+		    if (d.getElementById(id)) return;
+		    js = d.createElement(s); js.id = id;
+		    js.src = "http://connect.facebook.net/en_US/sdk.js";
+		    fjs.parentNode.insertBefore(js, fjs);
+		  }(document, 'script', 'facebook-jssdk'));
+
+		</script>
+
+<div class="container-full">
+
+      <div class="row">
+
+        <div class="col-lg-12 text-center v-center">
+
+          <h1>LessHomeless</h1>
+          <p class="lead">A sign-up page example for Bootstrap 3</p>
+
+          <br><br><br>
+
+					<fb:login-button scope="public_profile,email" data-size="xlarge" onlogin="checkLoginState();" auto_logout_link="true">
+			Entrar</fb:login-button>
+
+          <form class="col-lg-12">
+            <div class="input-group" style="width:340px;text-align:center;margin:0 auto;">
+            <input class="form-control input-lg" title="Don't worry. We hate spam, and will not share your email with anyone." placeholder="Enter your email address" type="text">
+              <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span>
+            </div>
+          </form>
+        </div>
+
+      </div> <!-- /row -->
+
+  	  <div class="row">
+
+        <div class="col-lg-12 text-center v-center" style="font-size:39pt;">
+          <a href="#"><i class="icon-google-plus"></i></a> <a href="#"><i class="icon-facebook"></i></a>  <a href="#"><i class="icon-twitter"></i></a> <a href="#"><i class="icon-github"></i></a> <a href="#"><i class="icon-pinterest"></i></a>
+        </div>
+
+      </div>
+
+  	<br><br><br><br><br>
+
+</div> <!-- /container full -->
+
+<div class="container" style="color:#222">
+
+  	<hr>
+
+  	<div class="row" style="color:#222">
+        <div class="col-md-4">
+          <div class="panel panel-default" style="color:#222">
+            <div class="panel-heading"style="color:#222"><h3 style="color:#222">Hello.</h3></div>
+            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate.
+            Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis
+            dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan.
+            Aliquam in felis sit amet augue.
+            </div>
+          </div>
+        </div>
+      	<div class="col-md-4">
+        	<div class="panel panel-default">
+            <div class="panel-heading"><h3 style="color:#222">Hello.</h3></div>
+            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate.
+            Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis
+            dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan.
+            Aliquam in felis sit amet augue.
+            </div>
+          </div>
+        </div>
+      	<div class="col-md-4">
+        	<div class="panel panel-default">
+            <div class="panel-heading"><h3 style="color:#222">Hello.</h3></div>
+            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate.
+            Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis
+            dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan.
+            Aliquam in felis sit amet augue.
+            </div>
+          </div>
+        </div>
     </div>
-    
 
-</body>
+	<div class="row">
+        <div class="col-lg-12">
+        <br><br>
+          <p class="pull-right"><a href="http://www.bootply.com">Template from Bootply</a> &nbsp; ©Copyright 2013 ACME<sup>TM</sup> Brand.</p>
+        <br><br>
+        </div>
+    </div>
+</div>
 
 
+	<!-- script references -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+	</body>
 </html>
