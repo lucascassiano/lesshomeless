@@ -120,7 +120,7 @@ function Login() {
           if(xmlhttp.responseText == "ok"){
             console.log("Usuario Logado");
             console.log(xmlhttp.responseText);
-            window.location.href = "home.html";
+            //window.location.href = "home.html";
 
           }
           else{

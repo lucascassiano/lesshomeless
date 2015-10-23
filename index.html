@@ -1,168 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<meta charset="utf-8">
-		<title>LessHomeless</title>
-		<meta name="generator" content="Bootply" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<!-- Font Awesome -->
-		<link href="css/font-awesome.min.css" rel="stylesheet">
-		<!-- Custom Bootstrap -->
-		<link href="css/lesshomeless.css" rel="stylesheet">
-		<!-- Connection Script for PHP layer -->
-		<script src="js/lesshomeless.js"></script>
-	</head>
+<!--AIzaSyA_BB6lZDuQmJ7Wl2rW6RpNCLepVWPetwA    API maps-->
+<html>
+<head>
+    <title>lessHomeless</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-	<body style="background-image: url('img/background_login.png');">
-		<script>
-		  // This is called with the results from from FB.getLoginStatus().
-		  function statusChangeCallback(response) {
-		    console.log('statusChangeCallback');
-		    console.log(response);
-		    // The response object is returned with a status field that lets the
-		    // app know the current login status of the person.
-		    // Full docs on the response object can be found in the documentation
-		    // for FB.getLoginStatus().
-		    if (response.status === 'connected') {
-		      // Logged into your app and Facebook.
-		      Login();
-		    } else if (response.status === 'not_authorized') {
-		      // The person is logged into Facebook, but not your app.
-		      //document.getElementById('status').innerHTML = 'Please log ' +
-		        //'into this app.';
-		    } else {
-		      // The person is not logged into Facebook, so we're not sure if
-		      // they are logged into this app or not.
-		      //document.getElementById('status').innerHTML = 'Please log ' +
-		      //  'into Facebook.';
-		    }
-		  }
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
-		  // This function is called when someone finishes with the Login
-		  // Button.  See the onlogin handler attached to it in the sample
-		  // code below.
-		  function checkLoginState() {
-		    FB.getLoginStatus(function(response) {
-		      statusChangeCallback(response);
-		    });
-		  }
+    <!-- Custom Bootstrap -->
+    <link href="css/lesshomeless.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <!-- Map Custom Style -->
+    <script src="js/map_styles.js"></script>
+    <!-- Google Maps API -->
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script src="js/bootstrap.js"></script>
+    <!-- Connection Script for PHP layer -->
+    <script src="js/lesshomeless.js"></script>
 
-		  window.fbAsyncInit = function() {
-		  FB.init({
-		    appId      : '522430154523440',
-		    cookie     : true,  // enable cookies to allow the server to access
-		                        // the session
-		    xfbml      : true,  // parse social plugins on this page
-		    version    : 'v2.0' // use version 2.0
-		  });
+<script>
+    var long = 0;
+    var lat = 0;
+     if (navigator.geolocation)
+        navigator.geolocation.getCurrentPosition(showPosition);
 
-		  FB.getLoginStatus(function(response) {
-		    statusChangeCallback(response);
-		  });
+    function showPosition(position) {
+       lat = position.coords.latitude;
+       long = position.coords.longitude;
+    }
+//center:new google.maps.LatLng(lat,long),
+    function initialize() {
+      var mapProp = {
+				center: {lat: -34.397, lng: 150.644},
+        zoom:15,
+        mapTypeId:google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true
+      };
 
-		  };
+    var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        //Definindo o estilo do mapa
+    var styledMap = new google.maps.StyledMapType(map_style5,
+        {name: "Dark map"});
+      //Associate the styled map with the MapTypeId and set it to display.
+      map.mapTypes.set('map_style', styledMap);
+      map.setMapTypeId('map_style');
+}
 
-		  // Load the SDK asynchronously
-		  (function(d, s, id) {
-		    var js, fjs = d.getElementsByTagName(s)[0];
-		    if (d.getElementById(id)) return;
-		    js = d.createElement(s); js.id = id;
-		    js.src = "http://connect.facebook.net/en_US/sdk.js";
-		    fjs.parentNode.insertBefore(js, fjs);
-		  }(document, 'script', 'facebook-jssdk'));
+google.maps.event.addDomListener(window, 'load', initialize);
 
-		</script>
+</script>
 
-<div class="container-full">
+<style>
+    .body{
+    vertical-align: middle}
+    #googleMap{
+        position: absolute;
+  top: 0; bottom: 0; right: 0; left: 0;
+        z-index: 0;
+    }
+    #centeredDiv{
+        position: relative;
+        align-content: center;
+        text-align: center;
+        width: 300px;
+        height: 200px;
+        margin: auto;
+        bottom: 0 auto;
+        color: #FFF;
+    }
+    .bottomDiv{
+        position: absolute;
+        margin: auto;
+        align-content: center;
+        text-align: center;
+        align-items: center;
+        align-self: center;
+        bottom: 10px;
+        width: 100%;
+        opacity: 0.8;
+    }
 
-      <div class="row">
+    #menu-bottom, #menu-bottom:hover, #menu-bottom:focus,#menu-bottom:active{
 
-        <div class="col-lg-12 text-center v-center">
+        border: none;
+    }
 
-          <h1>LessHomeless</h1>
-          <p class="lead">A sign-up page example for Bootstrap 3</p>
+</style>
 
-          <br><br><br>
+</head>
 
-					<fb:login-button scope="public_profile,email" data-size="xlarge" onlogin="checkLoginState();" auto_logout_link="true">
-			Entrar</fb:login-button>
-
-          <form class="col-lg-12">
-            <div class="input-group" style="width:340px;text-align:center;margin:0 auto;">
-            <input class="form-control input-lg" title="Don't worry. We hate spam, and will not share your email with anyone." placeholder="Enter your email address" type="text">
-              <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span>
+<body>
+    <div class="supreme-container">
+        <div id="googleMap"></div>
+            <div id= "centeredDiv" >
+                LessHomeless
             </div>
-          </form>
+
+        <div class="bottomDiv">
+            <input data-toggle="modal" data-target="#myModal" type="image" src="img/icon_lesshomeless_medium.png" style="width: 20%;
+        max-width: 200px;
+        min-width: 60px;"></input>
+            <br><a href="http://lucascassiano.github.io">&copy; Lucas Cassiano - 2015</a>
         </div>
 
-      </div> <!-- /row -->
-
-  	  <div class="row">
-
-        <div class="col-lg-12 text-center v-center" style="font-size:39pt;">
-          <a href="#"><i class="icon-google-plus"></i></a> <a href="#"><i class="icon-facebook"></i></a>  <a href="#"><i class="icon-twitter"></i></a> <a href="#"><i class="icon-github"></i></a> <a href="#"><i class="icon-pinterest"></i></a>
-        </div>
-
-      </div>
-
-  	<br><br><br><br><br>
-
-</div> <!-- /container full -->
-
-<div class="container" style="color:#222">
-
-  	<hr>
-
-  	<div class="row" style="color:#222">
-        <div class="col-md-4">
-          <div class="panel panel-default" style="color:#222">
-            <div class="panel-heading"style="color:#222"><h3 style="color:#222">Hello.</h3></div>
-            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate.
-            Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis
-            dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan.
-            Aliquam in felis sit amet augue.
-            </div>
-          </div>
-        </div>
-      	<div class="col-md-4">
-        	<div class="panel panel-default">
-            <div class="panel-heading"><h3 style="color:#222">Hello.</h3></div>
-            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate.
-            Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis
-            dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan.
-            Aliquam in felis sit amet augue.
-            </div>
-          </div>
-        </div>
-      	<div class="col-md-4">
-        	<div class="panel panel-default">
-            <div class="panel-heading"><h3 style="color:#222">Hello.</h3></div>
-            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate.
-            Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis
-            dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan.
-            Aliquam in felis sit amet augue.
-            </div>
-          </div>
-        </div>
     </div>
 
-	<div class="row">
-        <div class="col-lg-12">
-        <br><br>
-          <p class="pull-right"><a href="http://www.bootply.com">Template from Bootply</a> &nbsp; ©Copyright 2013 ACME<sup>TM</sup> Brand.</p>
-        <br><br>
-        </div>
-    </div>
-</div>
 
 
-	<!-- script references -->
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-	</body>
+		<script async defer
+		      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnnJzZSfy-oTnC3mN7guv7NliWHg6PfYs&callback=initMap">
+		    </script>
+</body>
+
+
 </html>
