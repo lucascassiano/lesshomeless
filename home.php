@@ -2,6 +2,7 @@
 <!--AIzaSyA_BB6lZDuQmJ7Wl2rW6RpNCLepVWPetwA    API maps-->
 <html>
 <head>
+    <?php session_start() ?>
     <title>lessHomeless</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,30 +25,115 @@
     <script src="http://maps.googleapis.com/maps/api/js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/jasny-bootstrap.min.js"></script>
+
+    <script>
+
+    //center:new google.maps.LatLng(lat,long),
+        function initialize() {
+          var mapProp = {
+    				center: {lat: -5.7792569, lng:-35.200916},
+            zoom:20,
+            mapTypeId:google.maps.MapTypeId.ROADMAP,
+            disableDefaultUI: true
+          };
+
+        var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
+            //Definindo o estilo do mapa
+        var styledMap = new google.maps.StyledMapType(map_style3,
+            {name: "Dark map"});
+
+        var infoWindow = new google.maps.InfoWindow({map: map});
+
+          // Try HTML5 geolocation.
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+              };
+              map.setCenter(pos);
+            }, function() {
+              handleLocationError(true, infoWindow, map.getCenter());
+            });
+          } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+          }
+
+}
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+          infoWindow.setPosition(pos);
+          infoWindow.setContent(browserHasGeolocation ?
+                                'Error: The Geolocation service failed.' :
+                                'Error: Your browser doesn\'t support geolocation.');
+        }
+
+        function SetMapCenter(lat, long){
+          var pos = {
+            lat: lat,
+            lng: long
+          };
+          map.setCenter(pos);
+        }
+
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+    <style>
+    #googleMap{
+        position: absolute;
+  top: 0; bottom: 0; right: 0; left: 0;
+        z-index: -100;
+    }
+
+    #user-icon{
+      position: absolute;
+      top:5px;
+      right:5px;
+      width: 10%;
+      max-width: 80px;
+      min-width: 50px;
+      border-radius: 50%;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);;
+    }
+
+    .bottomDiv{
+        position: absolute;
+        margin: auto;
+        align-content: center;
+        text-align: center;
+        align-items: center;
+        align-self: center;
+        bottom: 10px;
+        width: 100%;
+        opacity: 0.8;
+    }
+
+    #bottom_button{
+      width: 20%;
+      max-width: 150px;
+      min-width: 50px;
+      border: none;
+    }
+    </style>
 </head>
 
 <body>
+  <div id="googleMap"></div>
+  <a href="#" data-toggle="modal" data-target="#user-profile">
+    <?php
+      include "php/user.php";
+      $facebook_id = getCurrentFacebookId();
+      echo '<img id="user-icon" src="http://graph.facebook.com/'.$facebook_id.'/picture?width=500"></img>';
+    ?>
+  </a>
   <div>
-    <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#add-main">
-  Launch demo modal
-</button>
+    <div class="bottomDiv">
+        <a href="#" data-toggle="modal" data-target="#add-situation"><img id="bottom_button" src="img/icon_lesshomeless_medium.png" ></img></a>
+        <br><a href="http://lucascassiano.github.io">&copy; Lucas Cassiano - 2015</a>
+    </div>
 
-    <p>Janelas</p>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-main">
-      +Add
-    </button>
-    <button class="btn btn-primary">+user</button>
-    <button class="btn btn-primary">+situation</button>
-
-    <p>user</p>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#user-profile">user profile</button>
-
-    <p>situation</p>
-    <button class="btn btn-primary">situation details</button>
-
-    <p>search</p>
-    <button class="btn btn-primary">Search results</button>
   </div>
     <!------------Modals------------>
     <script>
@@ -71,6 +157,7 @@
                 $('.modal:visible').each(reposition);
             });
         });
+
     </script>
 
 
@@ -116,6 +203,11 @@
     $("#add-situation-button").click(function(){
       $('#add-main').modal('hide');
     });
+
+    $("add-situation").on('show.bs.modal', function (event) {
+      alert("Hello! I am an alert box!!");
+    });
+
     </script>
 
     <!-- Add Homeless -->
@@ -176,25 +268,24 @@
       </div>
     </div>
 
-
-    <!-- Add Situation -->
+    <!-- Report Situation -->
     <div class="modal fade" id="add-situation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Adicionar Situação</h4>
+            <h4 class="modal-title" id="myModalLabel">Reportar Situação</h4>
           </div>
 
-          <form role="form" id="add_usrform" >
-            <div class="form-group">
-              <label for="name">Título:</label>
-              <input type="text" class="form-control" id="title" name="homeless_name" required placeholder="Título da situação (ex.:Morador precisando de almoço)">
+          <form role="form" id="add_usrform" action="php/situation">
+            <div class="col-md-6">
+              <label for="name">Comentário:</label>
+              <input type="text" width="50%" class="form-control" id="title" name="homeless_name" required placeholder="Comentário sobre a situação (ex.:Morador precisando de almoço)">
               <center>
                 <h4><span class="fa fa-map-marker"></span>
-                Less Homeless irá indicar o evento como sua localização atual</h4>
+                Nós iremos armazenar o evento utilizando sua localização atual</h4>
+                <p>Lembre-se de ativar a opção de GPS do seu dispositivo</p>
               </center>
-
             </div>
 
             <center>
@@ -206,9 +297,10 @@
                 </div>
               </div>
             </center>
+
             <br>
             <center>
-              <p>Avalie este morador, entre 0 (não indica) e 5 (indica fortemente)</p>
+              <p>Avalie este morador, entre 0 (não indica) e 5 (indica fortemente) a ser ajudado</p>
             <div class="stars">
                 <input class="star star-5" id="star-5" type="radio" name="star"/>
                 <label class="star star-5" for="star-5"></label>
@@ -227,13 +319,11 @@
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
-
-
         </div>
       </div>
     </div>
 
-    <!-- Add Situation -->
+    <!-- User Profile -->
     <div class="modal fade" id="user-profile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -241,26 +331,98 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="user-profile-title">Perfil do Usuário</h4>
           </div>
-
           <center>
-            <img src="http://graph.facebook.com/683513915037176/picture?width=500" style="border-radius: 50%; width:30%; max-width:400px; min-width:100px"></img>
-            <h2 id="user_profile_name">Nome do Usuario</h2>
+            <br>
+            <?php
+              $facebook_id = getCurrentFacebookId();
+              echo '<img src="http://graph.facebook.com/'.$facebook_id.'/picture?width=500" style="border-radius: 50%; width:30%; max-width:400px; min-width:100px"></img>';
+              $userData = getDataToArray($facebook_id);
+              $userName = $userData["name"];
+              $score = getUserRating($facebook_id);
+              $reported = getReportedSituationsAmount($userData["id"]);
+            ?>
+            <h2 id="user_profile_name"><?php echo $userName ?></h2>
             <div id="user_profile_score" class="stars">
-                <label class="star star-5"></label>
-                <label class="star star-4"></label>
-                <label class="star star-3"></label>
-                <label class="star star-2 on"></label>
-                <label class="star star-1 on"></label>
+                <label class="star star-5 <?php if($score>=5)echo "on" ?>"></label>
+                <label class="star star-4 <?php if($score>=4)echo "on" ?>"></label>
+                <label class="star star-3 <?php if($score>=3)echo "on" ?>"></label>
+                <label class="star star-2 <?php if($score>=2)echo "on" ?>"></label>
+                <label class="star star-1 <?php if($score>=1)echo "on" ?>"></label>
             </div>
+            <h1 id="user_profile_reports"><?php echo $reported ?></h1>
+            <h3>Situações Reportadas</h3>
 
-            <h1 id="user_profile_reported_situations">3</h1>
-            <h3>Situacoes reportadas</h3>
+            <br>
+            <h4><small>Sair do app</small></h4>
+            <fb:login-button scope="public_profile,email" data-size="xlarge" onlogin="checkLoginState();" auto_logout_link="true">
+        Entrar</fb:login-button>
+        <br>
           </center>
+          <br>
 
         </div>
       </div>
     </div>
 
+    <!--Methods for Facebook SDK-->
+    <script>
+      // This is called with the results from from FB.getLoginStatus().
+      function statusChangeCallback(response) {
+        console.log('statusChangeCallback');
+        console.log(response);
+        // The response object is returned with a status field that lets the
+        // app know the current login status of the person.
+        // Full docs on the response object can be found in the documentation
+        // for FB.getLoginStatus().
+        if (response.status === 'connected') {
+          // Logged into your app and Facebook.
+        } else if (response.status === 'not_authorized') {
+          // The person is logged into Facebook, but not your app.
+        } else {
+          // The person is not logged into Facebook, so we're not sure if
+          // they are logged into this app or not.
+          LogOut();
+        }
+      }
+
+      // This function is called when someone finishes with the Login
+      // Button.  See the onlogin handler attached to it in the sample
+      // code below.
+      function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+          statusChangeCallback(response);
+        });
+      }
+
+      window.fbAsyncInit = function() {
+      FB.init({
+        appId      : 522430154523440,
+        cookie     : true,  // enable cookies to allow the server to access the session
+        xfbml      : true,  // parse social plugins on this page
+        version    : 'v2.0' // use version 2.2
+      });
+
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+
+      };
+
+      // Load the SDK asynchronously
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+
+      function LogOut(){
+        FB.api('/me', function(response) {
+          window.location.href = "index.php";
+        });
+      }
+    </script>
 
 </body>
 

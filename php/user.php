@@ -1,20 +1,26 @@
 <?php
 
-    $exec=$_POST['exec'];
-    session_start();
+    if(session_id() == '' || !isset($_SESSION)) {
+      // session isn't started
+      session_start();
+    }
 
-    if($exec=="sign")
-      sign($_POST['name'],$_POST['facebook_id'],$_POST["email"]);
-    else if($exec=="login")
-      tryLogin($_POST['name'],$_POST['facebook_id'],$_POST["email"]);
-    else if($exec=="rate")
-            rate($_POST["executer-id"],$_POST["receiver-id"],$_POST["score"]);
-    else if($exec=="getData")
-            getData($_POST["facebook-id"]);
-    else if($exec=="listAll")
-            listAllUsers();
-    else if($exec=="getCurrentUserId"){
-            getCurrentUserId();
+    //To handle data that comes from FORMS through POST method
+    if(isset($_POST['exec'])){
+      $exec=$_POST['exec'];
+      if($exec=="sign")
+        sign($_POST['name'],$_POST['facebook_id'],$_POST["email"]);
+      else if($exec=="login")
+        tryLogin($_POST['name'],$_POST['facebook_id'],$_POST["email"]);
+      else if($exec=="rate")
+              rate($_POST["executer-id"],$_POST["receiver-id"],$_POST["score"]);
+      else if($exec=="getData")
+              getData($_POST["facebook-id"]);
+      else if($exec=="listAll")
+              listAllUsers();
+      else if($exec=="getCurrentUserId"){
+              getCurrentUserId();
+      }
     }
 
     function tryLogin($name,$facebook_id,$email){
@@ -27,7 +33,8 @@
     }
 
     function sign($name, $facebook_id,$email){
-         include 'system_settings.php';
+         //include 'system_settings.php';
+         include_once 'system_settings.php';
          $con=mysqli_connect($host,$user_name,$user_password,$database_name);
 
         $score = 0;
@@ -36,11 +43,17 @@
 
         if(!$result){
             echo "##error: function SIGN -> ".mysqli_error($con);
+            //header ("location: ../index.php");
+            echo "<br> <a href='../index.php'> Voltar </a>";
+            exit();
         }
         else{
 
             $_SESSION["lesshomeless_user_id"] = getUser_internal_Id($facebook_id);
+            $_SESSION["lesshomeless_facebook_id"] = $facebook_id;
             echo "ok"; //user added with success
+            header ("location: ../home.php");
+            exit();
         }
 
     }
@@ -54,11 +67,14 @@
         if ($results) {
             if($results->num_rows == 0)
             {
-               echo "no"; //There is no user with this facebook login
+               echo "There is no user with this facebook login"; //There is no user with this facebook login
+               echo "<br> <a href='../index.php'> Voltar </a>";
             }
             else{
                 $_SESSION["lesshomeless_user_id"] = getUser_internal_Id($facebook_id);
+                $_SESSION["lesshomeless_facebook_id"] = $facebook_id;
                 echo "ok"; //The user exists
+                header ("location: ../home.php");
             }
         }
         else{
@@ -143,6 +159,8 @@
              //rating added with success
     }
 
+
+
     function getData($facebook_id){
         include 'system_settings.php';
         $con = mysqli_connect($host,$user_name,$user_password,$database_name);
@@ -160,6 +178,21 @@
             print json_encode($rows);
         }
     }
+
+    function getDataToArray($facebook_id){
+        include 'system_settings.php';
+        $con = mysqli_connect($host,$user_name,$user_password,$database_name);
+        $query = "SELECT * FROM users WHERE facebook_id =".$facebook_id;
+        $result = mysqli_query($con,$query);
+        if(!$result){
+            return null;
+        }
+        else{
+            $row = mysqli_fetch_assoc($result);
+            return $row;
+        }
+    }
+
 
     function listAllUsers(){
         include 'system_settings.php';
@@ -179,9 +212,29 @@
         }
   }
 
+  function getReportedSituationsAmount($user_id){
+    include 'system_settings.php';
+    $con = mysqli_connect($host,$user_name,$user_password,$database_name);
+    $query = "SELECT id FROM situations WHERE reporter_id = $user_id";
+    $results = mysqli_query($con,$query);
+    // Check connection
+    if (mysqli_connect_errno()) {
+        return 0;
+    }
+    else{
+      if(!$results)
+        return 0;
+      else
+        return mysqli_num_rows($results);
+    }
+  }
+
   function getCurrentUserId(){
-    session_start();
-    echo $_SESSION["lesshomeless_user_id"];
+    return $_SESSION["lesshomeless_user_id"];
+  }
+
+  function getCurrentFacebookId(){
+    return $_SESSION["lesshomeless_facebook_id"];
   }
 
 ?>

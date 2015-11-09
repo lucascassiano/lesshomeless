@@ -1,0 +1,205 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cassiano.sketcher.MenuSettings"
+    android:background="@drawable/back_dark_window"
+    android:clickable="true">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RelativeLayout
+        android:gravity="center|top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_window"
+        android:padding="2dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:id="@+id/relativeLayout">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Settings"
+            android:id="@+id/textView"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textAlignment="center"
+            android:singleLine="false"
+            android:gravity="center_horizontal"
+            android:background="@drawable/window_top"
+            android:layout_marginBottom="10dp"
+            android:paddingBottom="5dp"
+            android:typeface="sans" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Brush size (px)"
+            android:id="@+id/textView2"
+            android:layout_alignParentBottom="false"
+            android:layout_below="@+id/horizontalScrollView"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Brush color (rgb)"
+            android:id="@+id/textView3"
+            android:layout_alignParentBottom="false"
+            android:layout_below="@+id/seekBar"
+            android:layout_marginLeft="10dp" />
+
+        <SeekBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:layout_below="@+id/textView2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp" />
+
+
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_below="@+id/textView3"
+            android:id="@+id/colorPreview"
+            android:focusableInTouchMode="false"></ImageView>
+
+        <SeekBar
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarRed"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/colorPreview"
+            android:progressDrawable="@drawable/seekbar_red_progress"
+            android:thumb="@drawable/seekbar_red_thumb"
+            android:maxHeight="5dp"
+            android:minHeight="5dp"
+            android:max="255" />
+
+
+        <SeekBar
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarGreen"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/seekBarRed"
+            android:progressDrawable="@drawable/seekbar_green_progress"
+            android:thumb="@drawable/seekbar_green_thumb"
+            android:maxHeight="5dp"
+            android:minHeight="5dp"
+            android:max="255"/>
+
+
+        <SeekBar
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarBlue"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/seekBarGreen"
+            android:progressDrawable="@drawable/seekbar_blue_progress"
+            android:thumb="@drawable/seekbar_blue_thumb"
+            android:maxHeight="5dp"
+            android:minHeight="5dp"
+            android:max="255"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ok"
+            android:id="@+id/buttonOk"
+            android:layout_below="@+id/seekBarBlue"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_square_blue"
+            android:textColor="#fff"
+            android:layout_marginBottom="10dp" />
+
+        <HorizontalScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/horizontalScrollView"
+            android:layout_below="@+id/textView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerInParent="true"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center_horizontal|clip_horizontal"
+                android:baselineAligned="false"
+                android:textAlignment="center">
+
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:id="@+id/tool0"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/pencil_tool"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button_square_blue" />
+
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:id="@+id/tool1"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/pen_tool"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button_square_blue" />
+
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:id="@+id/tool2"
+                    android:layout_marginRight="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/marker_tool"
+                    android:background="@drawable/button_square_blue" />
+
+                <ImageButton
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:id="@+id/tool3"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/polygon_tool"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button_square_blue"
+                    android:focusableInTouchMode="true" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

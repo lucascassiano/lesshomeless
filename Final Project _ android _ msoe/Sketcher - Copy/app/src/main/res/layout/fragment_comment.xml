@@ -1,0 +1,97 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cassiano.sketcher.CommentFragment"
+    android:background="@drawable/back_dark_window"
+    android:clickable="true">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_window"
+        android:layout_margin="20dp"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Publish your idea"
+            android:id="@+id/textView"
+            android:gravity="center|center_horizontal"
+            android:background="@drawable/window_top"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="5dp" />
+
+        <Spinner
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner"
+            android:layout_below="@+id/textView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:spinnerMode="dropdown"
+            android:gravity="center_horizontal"
+            android:layout_centerHorizontal="true" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/commentTitle"
+            android:hint="Title"
+            android:layout_below="@+id/spinner"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:shadowColor="#000"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:id="@+id/commentBody"
+            android:hint="Comment about your idea"
+            android:gravity="center_horizontal"
+            android:textSize="13dp"
+            android:layout_below="@+id/commentTitle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share"
+            android:id="@+id/commentShare"
+            android:layout_below="@+id/commentBody"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_square_blue"
+            android:textColor="#fff"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/commentCancel"
+            android:layout_below="@+id/commentBody"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_square_blue_desabled"
+            android:textColor="#fff"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="false"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentLeft="true" />
+    </RelativeLayout>
+</FrameLayout>

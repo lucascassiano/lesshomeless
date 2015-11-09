@@ -15,5 +15,6 @@ lucas cassiano
 	        $randomString .= $characters[rand(0, strlen($characters) - 1)];
 	    }
 	    return $randomString;
-	}*/
+		}
+		*/
 ?>

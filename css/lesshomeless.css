@@ -5085,7 +5085,7 @@ Lucas Cassiano - 2015*/
 }
 
 .modal {
-  background-color: rgba(0,0,0,0.15);
+  background-color: rgba(0,0,0,0.8);
   display: none;
   overflow: auto;
   overflow-y: scroll;
@@ -5125,7 +5125,7 @@ Lucas Cassiano - 2015*/
 }
 .modal-content {
   position: relative;
-  background-color: rgba(0, 0, 0,0.5);
+  background-color: rgba(0, 0, 0,0.6);
   border: 1px solid #999999;    border: 1px solid rgba(0, 0, 0, 0.2);
 border-radius: 0px;
 -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
@@ -5812,7 +5812,10 @@ div.stars {
   width: 270px;
   display: inline-block;
 }
-
+div.stars-small {
+  width: 270px;
+  display: inline-block;
+}
 input.star { display: none; }
 
 label.star {
@@ -5844,9 +5847,28 @@ input.star-5:checked ~ label.star:before {
 
 input.star-1:checked ~ label.star:before { color: #F62; }
 
-label.star:hover { transform: rotate(0deg) scale(1.2); }
-
 label.star:before {
   content: '\f005';
   font-family: FontAwesome;
+}
+
+label.star-black{
+    float: right;
+    margin: 0;
+    font-size: 36px;
+    color: rgba(0, 0, 0, 0.1);
+    transition: all .2s;
+}
+label.star-black.on {
+  float: right;
+  font-size: 36px;
+  margin: 0;
+  color: rgba(10, 10, 10, 1);
+  transition: all .2s;
+}
+
+input.star-black:checked ~ label.star:before {
+  content: '\f005';
+  color: #111;
+  transition: all .25s;
 }
