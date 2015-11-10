@@ -9,31 +9,56 @@
       Add();
     }
 
-    else if($exec=="getData"){
-      getData($_POST["facebook-id"]);
-    }
-
     else if($exec=="rate"){
-      Rate();
+      RateSituation();
     }
 
     else if($exec=="listAll")
         listAllSituations();
 
-    else if($exec=="listAround")
-        listAround();
   }
 
-  function Rate(){
+  function RateSituation(){
+    include 'system_settings.php';
+    //include "user.php";
+
+    if(session_id() == '' || !isset($_SESSION)) {
+      // session isn't started
+      session_start();
+    }
+
     $situation_id = $_POST["situation_id"];
-    include "user.php";
-    session_start();
-    $user_id = getCurrentUserId();
+    $comment = $_POST["comment"];
+    $situation_creator_id = $_POST["creator_id"];
+
+    $reporter_id = $_SESSION["lesshomeless_user_id"];
+
     $score = 0;
     if(isset($_POST["star"])){
       $score = $_POST["star"];
     }
-    
+
+    $con = mysqli_connect($host,$user_name,$user_password,$database_name);
+    $query = "INSERT INTO situation_attendance (situation_id,user_id, comment, score) VALUES ($situation_id, $reporter_id, '$comment', $score)";
+    $results = mysqli_query($con,$query);
+    if(mysqli_error($con)){
+      echo("error: 1 ".mysqli_error($con));
+      exit();
+    }
+    else {
+      $query = "INSERT INTO users_ratings (executer_id, receiver_id, score) VALUES ($reporter_id, $situation_creator_id, $score)";
+      $result = mysqli_query($con,$query);
+
+      if(mysqli_error($con)){
+        echo("error: 2 ".mysqli_error($con));
+        exit();
+      }
+      else
+        header ("location: ../home.php");
+    }
+
+
+
   }
 
   function Add(){
@@ -152,10 +177,6 @@
   function Finalize($hasError, $message){
     header ("location: test.php?e=".$hasError."&message=".$message);
     exit();
-  }
-
-  function getData(){
-
   }
 
   function listAllSituations(){

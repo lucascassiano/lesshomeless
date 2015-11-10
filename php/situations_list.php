@@ -10,7 +10,7 @@
 	    }
 
 	    else{
-				$query = "SELECT * FROM situation JOIN users ON situation.reporter_id = users.id";
+				$query = "SELECT *, situation.id AS sit_id FROM situation JOIN users ON situation.reporter_id = users.id";
 	        $result = mysqli_query($con,$query);
 			$rows = array();
 			while($r = mysqli_fetch_assoc($result)) {

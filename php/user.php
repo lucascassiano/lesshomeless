@@ -34,8 +34,8 @@
 
     function sign($name, $facebook_id,$email){
          //include 'system_settings.php';
-         include_once 'system_settings.php';
-         $con=mysqli_connect($host,$user_name,$user_password,$database_name);
+        include 'system_settings.php';
+        $con=mysqli_connect($host,$user_name,$user_password,$database_name);
 
         $score = 0;
         $query = "INSERT INTO users (name,facebook_id,email,score) VALUES ('$name','$facebook_id','$email','$score')";
@@ -102,6 +102,7 @@
           }
         }
     }
+
     //Internal calls
     function getUser_internal_Id($facebook_id){
         include 'system_settings.php';
@@ -135,13 +136,12 @@
 
           echo "ok"; //rating added with success
         }
-
     }
 
     function getUserRating($facebook_id){
         include 'system_settings.php';
         $con = mysqli_connect($host,$user_name,$user_password,$database_name);
-        $query = "SELECT AVG(user_ratings.score) AS rate FROM
+        $query = "SELECT AVG(users_ratings.score) AS rate FROM
             users JOIN users_ratings
                 ON users.id = users_ratings.receiver_id
             WHERE users.facebook_id = '$facebook_id'
@@ -158,8 +158,6 @@
         }
              //rating added with success
     }
-
-
 
     function getData($facebook_id){
         include 'system_settings.php';

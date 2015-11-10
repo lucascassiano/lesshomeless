@@ -103,8 +103,9 @@
                   $("#detail_date").text("Postado em: "+situations[sit].date);
                   $('#detail_reporter_image').attr('src',"http://graph.facebook.com/"+situations[sit].facebook_id+"/picture?width=500");
                   $("#detail_reporter_name").text(situations[sit].name);
+                  $("#detail_creator_id").val(situations[sit].reporter_id);
                   $('#detail_image').attr('src',"uploads/"+situations[sit].picture);
-
+                  $("#situation_id").val(situations[sit].sit_id);
                   //End situations
                   //if(situations[sit].reporter_id==situations[sit)
                   //$( ".inner" ).append( "<p>Test</p>" );
@@ -262,19 +263,19 @@
             <center>
                 <img style="max-width:800px; width:90%" id="detail_image" src="img/background/background1.jpg"></img>
             </center>
-
             </div>
+            <hr>
           <!--Analise da Situacao-->
           <div class="row">
-          <form role="form" id="rate_situation_form" action="php/situation.php">
+          <form role="form" id="rate_situation_form" action="php/situation.php" method="post">
             <input type="hidden" name="exec" value="rate">
-            <input id="situation_id" type="hidden" name="situation_id" value="null">
+            <input id="situation_id" type="hidden" name="situation_id" value="0">
+            <input id="detail_creator_id" type="hidden" name="creator_id" value="0">
             <center>
             <div class="form-group" >
-              <input  id="situation_id" type="text" class="form-control" name="comment_about" value="null" placeholder="Comente sua experiência nesta situação">
+              <input  id="comment" type="text" class="form-control" name="comment" value="null" placeholder="Comente sua experiência nesta situação">
             </div>
             <p>Avalie a confiabilidade desta situação, entre 0 (não confiável) e 5 (altamente confiável)</p>
-
             <div class="stars">
                 <input class="star star-5" id="star-5" type="radio" name="star" value="5"/>
                 <label class="star star-5" for="star-5"></label>
@@ -288,9 +289,7 @@
                 <label class="star star-1" for="star-1"></label>
             </div>
           </center>
-          <div class="checkbox">
-            <label><input type="checkbox" required> Situação Encerrada</label>
-          </div>
+
           <center>
             <button type="submit" class="btn btn-primary">Participar</button>
           </center>
