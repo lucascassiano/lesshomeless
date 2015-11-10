@@ -14,14 +14,7 @@
     }
 
     else if($exec=="rate"){
-      if(!$_POST["executer_id"]){
-        $executer_id = $_SESSION["lesshomeless_user_id"];
-      }
-      else{
-        $executer_id = $_POST["executer_id"];
-      }
-
-      rate($executer_id,$_POST["receiver_id"],$_POST["score"]);
+      Rate();
     }
 
     else if($exec=="listAll")
@@ -31,11 +24,23 @@
         listAround();
   }
 
+  function Rate(){
+    $situation_id = $_POST["situation_id"];
+    include "user.php";
+    session_start();
+    $user_id = getCurrentUserId();
+    $score = 0;
+    if(isset($_POST["star"])){
+      $score = $_POST["star"];
+    }
+    
+  }
+
   function Add(){
     include 'system_settings.php';
 
-    $lat = $_POST["latitude"];
-    $long = $_POST["longitude"];
+    $latitude = $_POST["latitude"];
+    $longitude = $_POST["longitude"];
 
     $comment = $_POST["comment"];
     $reporter_id = $_POST["reporter_id"];
@@ -48,41 +53,28 @@
       $score = $_POST["star"];
     }
 
-    Finalize($score, "ERROR");
-
-    $con=mysqli_connect($host,$user_name,$user_password,$database_name);
-    $query = "INSERT INTO situations (longitude, latitude, reporter_id, picture, comment, estimated_time, score) VALUES ...";
-    $result = mysqli_query($con,$query);
-
-    if(mysqli_error($con)){
-        echo "##error: function SIGN -> ".mysqli_error($con);
-        //header ("location: ../index.php");
-        echo "<br> <a href='../index.php'> Voltar </a>";
-        exit();
-    }
-    else{
-        $_SESSION["lesshomeless_user_id"] = getUser_internal_Id($facebook_id);
-        $_SESSION["lesshomeless_facebook_id"] = $facebook_id;
-        echo "ok"; //user added with success
-        header ("location: ../home.php");
-        exit();
-    }
-
     //Upload Image
     $target_dir = "../uploads/";
-    $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+    $target_file = $target_dir . basename($_FILES["image"]["name"]);
+    $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 
     $uploadOk = 1;
 
-    $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
     $image_code = GenerateRandomString(34);
     $image_saved_name = $image_code .".". $imageFileType;
     $image_path = $target_dir . $image_saved_name;
 
+    echo "Upload: " . $_FILES["image"]["name"] . "<br />";
+     echo "Type: " . $_FILES["image"]["type"] . "<br />";
+     echo "Size: " . ($_FILES["image"]["size"] / 1024) . " Kb<br />";
+     echo "Stored in: " . $_FILES["image"]["tmp_name"];
+
+ //exit();
+
     $output_message = '<strong><i class="fa fa-check"></i> Situação Adicionada<strong> com sucesso';
     // Check if image file is a actual image or fake image
     if(isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+        $check = getimagesize($_FILES["image"]);
         if($check !== false) {
             $uploadOk = 1;
         } else {
@@ -100,7 +92,7 @@
     }
 
     // Check file size
-    if ($_FILES["fileToUpload"]["size"] > (30000000)) { //30Mb
+    if ($_FILES["image"]["size"] > (30000000)) { //30Mb
         $output_message = '<strong><i class="fa fa-exclamation-triangle"></i>Arquivo Selecionado É Muito Grande, máximo = 30Mb</strong>';
         $uploadOk = 0;
         Finalize($uploadOk,$output_message);
@@ -120,6 +112,9 @@
       Finalize($uploadOk,$output_message);
     // if everything is ok, try to upload file
     } else {
+        $path = ResizeAndSave($standardWidth,$standardHeight,$image_saved_name);
+        //Finalize($uploadOk,$output_message."  -> ".$path);
+        /*
         if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
             echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
         } else {
@@ -127,9 +122,31 @@
             $output_message = '<strong><i class="fa fa-exclamation-triangle"></i>Houve um erro</strong> enquanto faziamos o upload do seu arquivo, tente novamente mais tarde.';
             Finalize($uploadOk,$output_message);
         }
+        */
+        //$reporter_id, $comment, $score, $latitude, $longitude,$image_code
+        AddSituation($reporter_id, $comment, $score, $latitude, $longitude,$image_saved_name);
     }
 
     //---End of Image Upload
+  }
+
+  function AddSituation($reporter_id, $comment, $score, $latitude, $longitude,$image_path){
+    include 'system_settings.php';
+    $con=mysqli_connect($host,$user_name,$user_password,$database_name);
+    $query = "INSERT INTO situation (longitude, latitude, reporter_id, picture, comment, score) VALUES ($longitude, $latitude, $reporter_id, '$image_path', '$comment',$score)";
+    $result = mysqli_query($con,$query);
+
+    if(mysqli_error($con)){
+        echo "Error: ".mysqli_error($con);
+        //header ("location: ../index.php");
+        echo "<br> <a href='../index.php'> Voltar </a>";
+        //exit();
+    }
+    else{
+        //echo "ok"; //user added with success
+        header ("location: ../home.php?result=ok");
+        //exit();
+    }
   }
 
   function Finalize($hasError, $message){
@@ -142,8 +159,26 @@
   }
 
   function listAllSituations(){
-    //Remove Old Situations before process call
+    //List all situations
+    include 'system_settings.php';
+    // Create connection
+        $con=mysqli_connect($host,$user_name,$user_password,$database_name);
+
+        // Check connection
+        if (mysqli_connect_errno()) {
+            return "Failed to connect to MySQL: " . mysqli_connect_error();
+        }
+        else{
+
+            $result = mysqli_query($con,"SELECT * FROM situation");
+        $rows = array();
+        while($r = mysqli_fetch_assoc($result)) {
+            $rows[] = $r;
+        }
+        print json_encode($rows);
+          }
   }
+
 
   function ListAround(){
     //Remove Old Situations before process call
@@ -204,7 +239,7 @@ function ResizeAndSave($width, $height, $file_name){
   $x = ($w - $width / $ratio) / 2;
   $w = ceil($width / $ratio);
   /* new file name */
-  $path = '..uploads/'.$file_name;
+  $path = '../uploads/'.$file_name;
   /* read binary data from image file */
   $imgString = file_get_contents($_FILES['image']['tmp_name']);
   /* create image from string */

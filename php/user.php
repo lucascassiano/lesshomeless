@@ -215,7 +215,7 @@
   function getReportedSituationsAmount($user_id){
     include 'system_settings.php';
     $con = mysqli_connect($host,$user_name,$user_password,$database_name);
-    $query = "SELECT id FROM situations WHERE reporter_id = $user_id";
+    $query = "SELECT * FROM situation WHERE reporter_id = $user_id";
     $results = mysqli_query($con,$query);
     // Check connection
     if (mysqli_connect_errno()) {

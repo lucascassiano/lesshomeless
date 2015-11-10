@@ -27,11 +27,34 @@
     <script src="js/jasny-bootstrap.min.js"></script>
 
     <script>
+    //Current user position
+    var lat =0;
+    var lng = 0;
+
+    //Loading Situations to Map
+    var situations = new Array();
+
+    function LoadSituations(){
+      var xmlhttp=new XMLHttpRequest();
+      situations = new Array();
+      xmlhttp.onreadystatechange=function() {
+        //Receives data from situations_list.php
+        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+          situations = JSON.parse(xmlhttp.responseText);
+          initialize();
+        }
+      }
+        xmlhttp.open("GET","php/situations_list.php",true);
+        xmlhttp.overrideMimeType('text/xml; charset=iso-8859-1');
+        xmlhttp.send();
+    }
+
+    window.onload=LoadSituations();
 
     //center:new google.maps.LatLng(lat,long),
         function initialize() {
           var mapProp = {
-    				center: {lat: -5.7792569, lng:-35.200916},
+    				center: {lat: lat, lng: lng},
             zoom:20,
             mapTypeId:google.maps.MapTypeId.ROADMAP,
             disableDefaultUI: true
@@ -42,7 +65,7 @@
         var styledMap = new google.maps.StyledMapType(map_style3,
             {name: "Dark map"});
 
-        var infoWindow = new google.maps.InfoWindow({map: map});
+        //var infoWindow = new google.maps.InfoWindow({map: map});
 
           // Try HTML5 geolocation.
           if (navigator.geolocation) {
@@ -52,20 +75,58 @@
                 lng: position.coords.longitude
               };
               map.setCenter(pos);
-            }, function() {
-              handleLocationError(true, infoWindow, map.getCenter());
             });
-          } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
           }
 
-}
-        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-          infoWindow.setPosition(pos);
-          infoWindow.setContent(browserHasGeolocation ?
-                                'Error: The Geolocation service failed.' :
-                                'Error: Your browser doesn\'t support geolocation.');
+
+          //Adding markers on the map
+          console.log("Situations");
+          console.log(situations);
+
+          for(var sit in situations){
+            var icon_src ='img/marker_simple.png';
+            console.log("reading..");
+            var marker = new google.maps.Marker({
+              position: new google.maps.LatLng(situations[sit].latitude, situations[sit].longitude) ,
+              title: situations[sit].comment,
+              icon: icon_src
+            });
+
+                var content = "<div><p>"+situations[sit].comment+"</p></div>";
+                var infowindow = new google.maps.InfoWindow({
+                  content: content
+                });
+
+                marker.addListener('click', function() {
+                  //infowindow.open(map, marker);
+                  $("#detail_comment").text(situations[sit].comment);
+                  $("#detail_date").text("Postado em: "+situations[sit].date);
+                  $('#detail_reporter_image').attr('src',"http://graph.facebook.com/"+situations[sit].facebook_id+"/picture?width=500");
+                  $("#detail_reporter_name").text(situations[sit].name);
+                  $('#detail_image').attr('src',"uploads/"+situations[sit].picture);
+
+                  //End situations
+                  //if(situations[sit].reporter_id==situations[sit)
+                  //$( ".inner" ).append( "<p>Test</p>" );
+                  $("#detail-situation").modal('toggle');
+
+                });
+                marker.setMap(map);
+          }
+
+        }//end of initialize()
+
+
+      //Loading User GeoLocation
+        function getLocation() {
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(showPosition);
+          } else {
+              alert("ERRO: Posição do usuário Não disponível");
+          }
+        }
+        function showPosition(position) {
+          SetMapCenter(position.coords.latitude,position.coords.longitude);
         }
 
         function SetMapCenter(lat, long){
@@ -77,7 +138,8 @@
         }
 
 
-    google.maps.event.addDomListener(window, 'load', initialize);
+    //google.maps.event.addDomListener(window, 'load', initialize);
+
 
     </script>
     <style>
@@ -98,6 +160,13 @@
       box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);;
     }
 
+    .user-icon{
+      width: 20%;
+      max-width: 80px;
+      min-width: 50px;
+      border-radius: 50%;
+    }
+
     .bottomDiv{
         position: absolute;
         margin: auto;
@@ -116,6 +185,11 @@
       min-width: 50px;
       border: none;
     }
+
+    .smallText{
+      text-align: justify;
+
+    }
     </style>
 </head>
 
@@ -130,7 +204,10 @@
   </a>
   <div>
     <div class="bottomDiv">
-        <a href="#" data-toggle="modal" data-target="#add-situation"><img id="bottom_button" src="img/icon_lesshomeless_medium.png" ></img></a>
+        <!-- Old button that calls the modal-->
+        <!--<a href="#" data-toggle="modal" data-target="#add-situation"><img id="bottom_button" src="img/icon_lesshomeless_medium.png" ></img></a>-->
+        <a href="report.php"><img id="bottom_button" src="img/icon_lesshomeless_medium.png" ></img></a>
+
         <br><a href="http://lucascassiano.github.io">&copy; Lucas Cassiano - 2015</a>
     </div>
 
@@ -160,165 +237,66 @@
 
     </script>
 
-
-    <!-- Add main -->
-
-    <div class="modal fade" id="add-main" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <!-- Detail Situation -->
+    <div class="modal fade" id="detail-situation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Adicionar</h4>
+            <h4 class="modal-title" id="myModalLabel">Detalhes da Situação</h4>
           </div>
+
           <div class="modal-body">
-            <!-- Columns are always 50% wide, on mobile and desktop -->
-            <center>
-            <div class="row">
-              <div class="col-xs-6">
-                <input id="add-homeless-button" data-toggle="modal" data-target="#add-homeless" type="image" src="img/icon_homeless.png" width="100%"
-                onmouseover="this.src='img/icon_homeless_hover.png'"
-                onmouseout="this.src='img/icon_homeless.png'"
-                ></input>
-                <h5>Morador em estado de rua</h5>
-              </div>
-              <div class="col-xs-6">
-                <input id="add-situation-button" data-toggle="modal" data-target="#add-situation" type="image" src="img/icon_add_location.png" width="100%"
-                onmouseover="this.src='img/icon_add_location_hover.png'"
-                onmouseout="this.src='img/icon_add_location.png'"
-                ></input>
-                <h5>Situacao a ser reportada</h5>
-              </div>
-            </div>
-          </center>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <script>
-    $("#add-homeless-button").click(function(){
-      $('#add-main').modal('hide');
-    });
-
-    $("#add-situation-button").click(function(){
-      $('#add-main').modal('hide');
-    });
-
-    $("add-situation").on('show.bs.modal', function (event) {
-      alert("Hello! I am an alert box!!");
-    });
-
-    </script>
-
-    <!-- Add Homeless -->
-    <div class="modal fade" id="add-homeless" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Adicionar Morador em estado de Rua</h4>
-          </div>
-
-          <form role="form" id="add_usrform" >
-            <div class="form-group">
-              <label for="name">Nome Completo:</label>
-              <input type="text" class="form-control" id="name" name="homeless_name" required placeholder="Nome Completo do morador">
-              <label for="birth">Data de Nascimento:</label>
-              <input type="date" class="form-control" id="name" name="homeless_name" required min="1929-12-31">
-            </div>
-            <hr>
-            <div class="form-group">
-              <p>Os dados abaixos não serão mostrados a demais usuários, serão usados apenas para validação de registro*</p>
-              <label for="cpf">CPF:</label>
-              <input type="number" class="form-control" id="cpf" name="homeless_cpf" required pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="CPF no formato 000.000.000-00">
-
-              <label for="rg">RG:</label>
-              <input type="number" class="form-control" id="rg" name="homeless_rg" required pattern="\d{3}\.\d{3}\.\d{3}" placeholder="RG no formato 000.000.000">
-            </div>
-            <hr>
-            <div class="form-group">
-              <!--
-              <center>
-                <p>Avalie este morador, entre 0 (não indica) e 5 (indica fortemente)</p>
-              <div class="stars">
-                  <input class="star star-5" id="star-5" type="radio" name="star"/>
-                  <label class="star star-5" for="star-5"></label>
-                  <input class="star star-4" id="star-4" type="radio" name="star"/>
-                  <label class="star star-4" for="star-4"></label>
-                  <input class="star star-3" id="star-3" type="radio" name="star"/>
-                  <label class="star star-3" for="star-3"></label>
-                  <input class="star star-2" id="star-2" type="radio" name="star"/>
-                  <label class="star star-2" for="star-2"></label>
-                  <input class="star star-1" id="star-1" type="radio" name="star"/>
-                  <label class="star star-1" for="star-1"></label>
-              </div>
-            </center>
-          -->
-            <label for="comment">Comentario sobre o morador:</label>
-            <input type="text" class="form-control" id="comment" name="homeless_comment" required placeholder="Comentario sobre o morador">
-
-          </div>
-            <div class="checkbox">
-              <label><input type="checkbox" required> Li e aceito os termos de compromisso.</label>
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-          </form>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Report Situation -->
-    <div class="modal fade" id="add-situation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Reportar Situação</h4>
-          </div>
-
-          <form role="form" id="add_usrform" action="php/situation">
             <div class="col-md-6">
-              <label for="name">Comentário:</label>
-              <input type="text" width="50%" class="form-control" id="title" name="homeless_name" required placeholder="Comentário sobre a situação (ex.:Morador precisando de almoço)">
+              <p id="detail_date"></p>
+              <p id="detail_comment" class="smallText">Comentário da Situação</p>
+            </div>
+            <div class="col-md-6">
+              <p>postado por:</p>
               <center>
-                <h4><span class="fa fa-map-marker"></span>
-                Nós iremos armazenar o evento utilizando sua localização atual</h4>
-                <p>Lembre-se de ativar a opção de GPS do seu dispositivo</p>
-              </center>
+              <img class="user-icon" id="detail_reporter_image" src="img/icon_generic_user.png"></img>
+              <h4 id="detail_reporter_name">User Name</h4>
+            </center>
             </div>
 
             <center>
-              <div class="fileinput fileinput-new" data-provides="fileinput" style="width: 100%;">
-                <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 80%;"></div>
-                <div>
-                  <span class="btn btn-primary btn-file"><span class="fileinput-new"><span class="fa fa-camera"></span> Anexar Foto</span><span class="fileinput-exists">Mudar Foto</span><input type="file" name="..."></span>
-                  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
-                </div>
-              </div>
+                <img style="max-width:800px; width:90%" id="detail_image" src="img/background/background1.jpg"></img>
             </center>
 
-            <br>
+            </div>
+          <!--Analise da Situacao-->
+          <div class="row">
+          <form role="form" id="rate_situation_form" action="php/situation.php">
+            <input type="hidden" name="exec" value="rate">
+            <input id="situation_id" type="hidden" name="situation_id" value="null">
             <center>
-              <p>Avalie este morador, entre 0 (não indica) e 5 (indica fortemente) a ser ajudado</p>
+            <div class="form-group" >
+              <input  id="situation_id" type="text" class="form-control" name="comment_about" value="null" placeholder="Comente sua experiência nesta situação">
+            </div>
+            <p>Avalie a confiabilidade desta situação, entre 0 (não confiável) e 5 (altamente confiável)</p>
+
             <div class="stars">
-                <input class="star star-5" id="star-5" type="radio" name="star"/>
+                <input class="star star-5" id="star-5" type="radio" name="star" value="5"/>
                 <label class="star star-5" for="star-5"></label>
-                <input class="star star-4" id="star-4" type="radio" name="star"/>
+                <input class="star star-4" id="star-4" type="radio" name="star" value="4"/>
                 <label class="star star-4" for="star-4"></label>
-                <input class="star star-3" id="star-3" type="radio" name="star"/>
+                <input class="star star-3" id="star-3" type="radio" name="star" value="3"/>
                 <label class="star star-3" for="star-3"></label>
-                <input class="star star-2" id="star-2" type="radio" name="star"/>
+                <input class="star star-2" id="star-2" type="radio" name="star" value="2"/>
                 <label class="star star-2" for="star-2"></label>
-                <input class="star star-1" id="star-1" type="radio" name="star"/>
+                <input class="star star-1" id="star-1" type="radio" name="star" value="1"/>
                 <label class="star star-1" for="star-1"></label>
             </div>
           </center>
-            <div class="checkbox">
-              <label><input type="checkbox" required> Li e aceito os termos de compromisso.</label>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+          <div class="checkbox">
+            <label><input type="checkbox" required> Situação Encerrada</label>
+          </div>
+          <center>
+            <button type="submit" class="btn btn-primary">Participar</button>
+          </center>
           </form>
+        </div>
+
         </div>
       </div>
     </div>
@@ -339,7 +317,7 @@
               $userData = getDataToArray($facebook_id);
               $userName = $userData["name"];
               $score = getUserRating($facebook_id);
-              $reported = getReportedSituationsAmount($userData["id"]);
+              $reported = getReportedSituationsAmount(getCurrentUserId());
             ?>
             <h2 id="user_profile_name"><?php echo $userName ?></h2>
             <div id="user_profile_score" class="stars">

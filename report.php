@@ -29,6 +29,12 @@
     <script src="http://maps.googleapis.com/maps/api/js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/jasny-bootstrap.min.js"></script>
+
+    <!-- File Upload -->
+    <script src="plugins/file_upload/vendor/jquery.ui.widget.js"></script>
+    <script src="plugins/file_upload/jquery.iframe-transport.js"></script>
+    <script src="plugins/file_upload/jquery.fileupload.js"></script>
+
     <style>
     .jus{
       text-align: justify;
@@ -55,9 +61,10 @@
       $("#longitude").val(position.coords.longitude);
     }
     </script>
+
 </head>
 
-<body>
+<body onload="getLocation()">
   <div class="container">
         <div class="header clearfix">
           <nav>
@@ -71,7 +78,7 @@
           <h3 style="color:black">Reportar Situação</h3>
           <p class="smallText"><small>Insira apenas informações verdadeiras, nós confiamos em você e outros usuários irão avaliar os dados inseridos por você.</small></p>
 
-          <form action="php/situation.php" method="post">
+          <form id="formReport" action="php/situation.php" method="post" enctype="multipart/form-data" data-ajax="false">
             <input type="hidden" name="exec" value="add">
             <input type="hidden" name="reporter_id" value="<?php include "php/user.php"; echo getCurrentUserId();?>">
             <input type="hidden" name="latitude" value ="0" id="latitude">
@@ -79,6 +86,7 @@
             <div class="row">
             <div class="col-md-6">
             <!--Upload Image-->
+
             <center>
               <div class="fileinput fileinput-new" data-provides="fileinput" style="width: 100%;">
                 <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 80%;"></div>
@@ -86,12 +94,13 @@
                   <span class="btn btn-primary btn-file">
                     <span class="fileinput-new"><span class="fa fa-camera"></span> Anexar Foto</span>
                     <span class="fileinput-exists">Mudar Foto</span>
-                    <input type="file" name="image" accept="image/*" required>
+                    <input type="file" name="image" id="image" accept="image/*" required>
                     </span>
                   <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
                 </div>
               </div>
             </center>
+
             </div>
             <!-- end upload image-->
             <center>
